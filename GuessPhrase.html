@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Guess the Phrase Game</title>
+</head>
+
+<body>
+    <center>
+        <h1>Guess the Phrase Game</h1>
+        <p>Try to guess the correct phrase:</p>
+        <p id="phraseDisplay"></p>
+        <p>Attempts Left: <span id="attemptsLeft">5</span></p>
+        <input type="text" id="guessInput" placeholder="Enter your guess">
+        <button onclick="checkGuess()">Submit Guess</button>
+        <p id="message"></p>
+    </center>
+
+    <script>
+        // List of possible phrases for the game
+        const phrases = ["I Love You", "I miss you", "Mahal kita", "I love you so much"];
+
+        // Select a random phrase from the list
+        const randomIndex = Math.floor(Math.random() * phrases.length);
+        const selectedPhrase = phrases[randomIndex].toUpperCase();
+        let attempts = 5;
+        let guessedLetters = [];
+
+        // Function to display the current status of the phrase with blanks for unguessed letters
+        function displayPhrase() {
+            let display = "";
+            for (const char of selectedPhrase) {
+                if (char === " ") {
+                    display += " ";
+                } else if (guessedLetters.includes(char)) {
+                    display += char;
+                } else {
+                    display += "_";
+                }
+            }
+            document.getElementById("phraseDisplay").textContent = display;
+        }
+
+        // Function to check if the guessed letter is correct
+        function checkGuess() {
+            const guess = document.getElementById("guessInput").value.toUpperCase();
+            document.getElementById("guessInput").value = "";
+
+            if (guessedLetters.includes(guess)) {
+                document.getElementById("message").textContent = "You already guessed this letter!";
+                return;
+            }
+
+            if (guess.length === 1 && guess.match(/[A-Z]/)) {
+                guessedLetters.push(guess);
+                if (!selectedPhrase.includes(guess)) {
+                    attempts--;
+                }
+            } else if (guess === selectedPhrase) {
+                document.getElementById("message").textContent = "Congratulations! You guessed the correct phrase!";
+                document.getElementById("guessInput").disabled = true;
+                return;
+            } else {
+                document.getElementById("message").textContent = "Please enter a single letter or the whole phrase.";
+                return;
+            }
+
+            displayPhrase();
+            document.getElementById("attemptsLeft").textContent = attempts;
+
+            if (attempts === 0) {
+                document.getElementById("message").textContent = "Game Over! The correct phrase was: " + selectedPhrase;
+                document.getElementById("guessInput").disabled = true;
+            }
+        }
+
+        // Initialize the display of the phrase and attempts
+        displayPhrase();
+        document.getElementById("attemptsLeft").textContent = attempts;
+    </script>
+</body>
+
+</html>
